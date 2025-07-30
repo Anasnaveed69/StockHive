@@ -1,6 +1,6 @@
 // StockHive - Central hub for all your products
 // API Configuration
-const API_BASE_URL = '/api';
+const API_BASE_URL = window.location.hostname === 'localhost' ? '/api' : `${window.location.origin}/api`;
 
 // Global state
 let allProducts = [];
@@ -155,6 +155,9 @@ function initializeAuthForms() {
         const password = document.getElementById('registerPassword').value;
         
         try {
+            console.log('Attempting registration with:', { name, email, password: '***' });
+            console.log('API URL:', `${API_BASE_URL}/auth/register`);
+            
             const response = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
@@ -163,7 +166,11 @@ function initializeAuthForms() {
                 body: JSON.stringify({ name, email, password })
             });
             
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
             const data = await response.json();
+            console.log('Response data:', data);
             
             if (data.success) {
                 authToken = data.data.token;
