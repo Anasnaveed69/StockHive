@@ -234,7 +234,52 @@ app.delete('/api/products/:id', protect, async (req, res) => {
   }
 });
 
-// Get single product
+// Search products
+app.get('/api/products/search/:query', protect, async (req, res) => {
+  try {
+    const searchRegex = new RegExp(req.params.query, 'i');
+    const products = await Product.find({
+      user: req.user._id,
+      $or: [
+        { name: searchRegex },
+        { description: searchRegex },
+        { category: searchRegex }
+      ]
+    });
+    
+    res.json({
+      success: true,
+      data: products
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error searching products'
+    });
+  }
+});
+
+// Get products by category
+app.get('/api/products/category/:category', protect, async (req, res) => {
+  try {
+    const products = await Product.find({ 
+      user: req.user._id,
+      category: req.params.category 
+    });
+    
+    res.json({
+      success: true,
+      data: products
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching products by category'
+    });
+  }
+});
+
+// Get single product (must be last to avoid conflicts)
 app.get('/api/products/:id', protect, async (req, res) => {
   try {
     const product = await Product.findOne({ 
@@ -261,31 +306,6 @@ app.get('/api/products/:id', protect, async (req, res) => {
   }
 });
 
-// Search products
-app.get('/api/products/search/:query', protect, async (req, res) => {
-  try {
-    const searchRegex = new RegExp(req.params.query, 'i');
-    const products = await Product.find({
-      user: req.user._id,
-      $or: [
-        { name: searchRegex },
-        { description: searchRegex },
-        { category: searchRegex }
-      ]
-    });
-    
-    res.json({
-      success: true,
-      data: products
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error searching products'
-    });
-  }
-});
-
 // Get categories
 app.get('/api/categories', protect, async (req, res) => {
   try {
@@ -298,26 +318,6 @@ app.get('/api/categories', protect, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching categories'
-    });
-  }
-});
-
-// Get products by category
-app.get('/api/products/category/:category', protect, async (req, res) => {
-  try {
-    const products = await Product.find({ 
-      user: req.user._id,
-      category: req.params.category 
-    });
-    
-    res.json({
-      success: true,
-      data: products
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching products by category'
     });
   }
 });
