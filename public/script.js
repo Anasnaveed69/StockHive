@@ -346,7 +346,7 @@ async function searchProducts() {
     }
     
     try {
-        const data = await fetchAPI(`/products/search?query=${encodeURIComponent(query)}`);
+        const data = await fetchAPI(`/products/search/${encodeURIComponent(query)}`);
         const results = data.data || [];
         renderProducts(results, document.getElementById('searchResults'));
         
