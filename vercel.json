@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/stockhive.js",
+      "src": "api/**/*.js",
       "use": "@vercel/node"
     },
     {
@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/stockhive.js"
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
