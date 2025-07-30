@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockHive - Central hub for all your products</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                                  <div class="header-title">
+                      <h1><i class="fas fa-boxes animated-stock-icon"></i> StockHive</h1>
+                      <p>Central hub for all your products</p>
+                  </div>
+                <div class="header-actions">
+                    <div class="user-info" id="userInfo" style="display: none;">
+                        <span id="userName"></span>
+                        <button class="btn btn-secondary btn-sm" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Authentication Section (shown when not logged in) -->
+        <div id="authSection" class="auth-section">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="register">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="loginForm" class="auth-form active">
+                    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="auth-form">
+                    <h2><i class="fas fa-user-plus"></i> Register</h2>
+                    <form id="registerFormElement">
+                        <div class="form-group">
+                            <label for="registerName">Full Name</label>
+                            <input type="text" id="registerName" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" required placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" required placeholder="Enter your password (min 6 characters)">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section (shown when logged in) -->
+        <div id="appSection" class="app-section" style="display: none;">
+            <!-- Navigation -->
+            <nav class="nav">
+                <button class="nav-btn active" data-section="products">
+                    <i class="fas fa-box"></i> My Products
+                </button>
+                <button class="nav-btn" data-section="search">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <button class="nav-btn" data-section="categories">
+                    <i class="fas fa-tags"></i> Categories
+                </button>
+                <button class="nav-btn" data-section="add">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Products Section -->
+                <section id="products" class="section active">
+                    <div class="section-header">
+                        <h2><i class="fas fa-box"></i> My Products</h2>
+                        <button class="btn btn-primary" onclick="loadProducts()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="stats-bar">
+                        <div class="stat">
+                            <i class="fas fa-box stat-icon"></i>
+                            <span class="stat-number" id="totalProducts">0</span>
+                            <span class="stat-label">Total Products</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-tags stat-icon"></i>
+                            <span class="stat-number" id="totalCategories">0</span>
+                            <span class="stat-label">Categories</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-dollar-sign stat-icon"></i>
+                            <span class="stat-number" id="priceRange">$0 - $0</span>
+                            <span class="stat-label">Price Range</span>
+                        </div>
+                    </div>
+                    <div class="products-grid" id="productsGrid">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading products...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Search Section -->
+                <section id="search" class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-search"></i> Search Products</h2>
+                    </div>
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search by name, description, or category..." class="search-input">
+                            <button class="btn btn-primary" onclick="searchProducts()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        <div class="search-results" id="searchResults">
+                            <p class="placeholder-text">Enter a search term to find products</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Categories Section -->
+                <section id="categories" class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tags"></i> Browse by Category</h2>
+                    </div>
+                    <div class="categories-container">
+                        <div class="category-filters" id="categoryFilters">
+                            <!-- Categories will be loaded here -->
+                        </div>
+                        <div class="category-results" id="categoryResults">
+                            <p class="placeholder-text">Select a category to view products</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Product Section -->
+                <section id="add" class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-plus"></i> Add New Product</h2>
+                    </div>
+                    <div class="form-container">
+                        <form id="addProductForm" class="product-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="productName">Product Name *</label>
+                                    <input type="text" id="productName" name="name" required placeholder="e.g., Wireless Headphones">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productBrand">Brand</label>
+                                    <input type="text" id="productBrand" name="brand" placeholder="e.g., Samsung, Nike, Apple">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="productCategory">Category *</label>
+                                    <select id="productCategory" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Electronics">Electronics</option>
+                                        <option value="Home & Kitchen">Home & Kitchen</option>
+                                        <option value="Fashion">Fashion</option>
+                                        <option value="Sports & Outdoors">Sports & Outdoors</option>
+                                        <option value="Books">Books</option>
+                                        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                                        <option value="Automotive">Automotive</option>
+                                        <option value="Health & Wellness">Health & Wellness</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productPrice">Price *</label>
+                                    <input type="number" id="productPrice" name="price" step="0.01" required placeholder="99.99">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="productDescription">Description</label>
+                                <textarea id="productDescription" name="description" placeholder="Enter product description..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="productStock">Stock</label>
+                                <input type="number" id="productStock" name="stock" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="productImage">Image URL</label>
+                                <input type="url" id="productImage" name="image" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Product
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-undo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Product Modal -->
+        <div id="productModal" class="modal">
+            <div class="modal-content">
+                <div id="modalContent">
+                    <!-- Product details will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
